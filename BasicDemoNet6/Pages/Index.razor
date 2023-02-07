@@ -1,0 +1,55 @@
+﻿@page "/"
+@inject IConfiguration _config
+@inject IOptions<EmailSettingsOptions> _emailSettingsOptions
+
+<h1>Hello, world!</h1>
+
+<p>
+    MySetting Value: @mySetting
+</p>
+
+<p>
+    SubSetting Value: @mySubSetting
+</p>
+
+<p>
+    SubSubSetting Value: @mySubSubSetting
+</p>
+
+
+<p>
+    Connection String Value: @connectionString
+</p>
+
+<p>
+    Email Enabled: @emailSettings.EnableEmailSystem <br />
+    Email Timeout: @emailSettings.EmailTimeoutInSeconds <br />
+    Email Servers: 
+    @foreach ( string server in emailSettings.EmailServers )
+    {
+        @server @:&nbsp;
+    }
+    <br />
+    Email Admin: @emailSettings.EmailAdmin.FirstName @emailSettings.EmailAdmin.LastName
+</p>
+
+@code {
+    string mySetting = "";
+    string mySubSetting = "";
+    string mySubSubSetting = "";
+    string connectionString = "";
+    EmailSettingsOptions emailSettings = new EmailSettingsOptions();
+
+    protected override void OnInitialized()
+    {
+        mySetting = _config.GetValue<string>( "MySetting" );
+        mySubSetting = _config.GetValue<string>( "MainSetting:SubSetting" );
+        mySubSubSetting = _config.GetValue<string>( "MainSetting:SubSection:SubSubSetting" );
+        connectionString = _config.GetConnectionString( "Default" );
+        
+        //emailSettings = _config.GetSection("EmailSettings").Get<EmailSettingsOptions>();
+        
+        // After you configure the services
+        emailSettings = _emailSettingsOptions.Value;
+    }
+}
