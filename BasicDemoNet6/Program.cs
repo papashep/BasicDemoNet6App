@@ -1,17 +1,22 @@
 using BasicDemoNet6.Data;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System.Runtime.CompilerServices;
 using BasicDemoNet6.Options;
-using BasicDemoNet6;
+
+using Microsoft.AspNetCore;
 
 var builder = WebApplication.CreateBuilder( args );
 
 var memCollection = new Dictionary<string, string>
 {
+    // Commented out while testing other sections such as Azure KeyVault
     // { "MainSetting:SubSetting","sub setting from In-Memory collection" }
 };
+
+
+// Question 1 - I cannot get the following line to work ?????????
+// IHostEnvironment env = hostingContext.HostingEnvironment;
+
+// Question 2 - I cannot get the following line to work ?????????
+// builder.Configuration.Sources.Clear();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -22,10 +27,9 @@ builder.Services.Configure<EmailSettingsOptions>( builder.Configuration.GetSecti
 
 builder.Configuration.AddJsonFile( "appsettings.json", optional: false, reloadOnChange: true );
 
-// *******************************
-// Point 1 - I need some HELP HERE, please!
+// Question 3 - I cannot get the following to work, see related to Question 1 ?????????
 // builder.Configuration?.AddJsonFile( $"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true );
-//********************************
+
 
 builder.Configuration.AddJsonFile( "custom.json", optional: true, reloadOnChange: true );
 
@@ -36,21 +40,23 @@ builder.Configuration.AddIniFile( "custom.ini", optional: true, reloadOnChange: 
 builder.Configuration.AddInMemoryCollection(memCollection );
 
 
-if ( hostingContext.HostingEnvironment.IsProduction() )
-{
-    var builtConfig = builder.Build();
+// Question 4 - I cannot get the following section on Azure KeyVault to work ?????????
+//if ( hostingContext.HostingEnvironment.IsProduction() )
+//{
+//    var builtConfig = builder.Build();
 
-    var azureServiceTokenProvider = new AzureServiceTokenProvider();
-    var keyVaultClient = new KeyVaultClient(
-        new KeyVaultClient.AuthenticationCallback(
-            azureServiceTokenProvider.KeyVaultTokenCallback ) );
+//    var azureServiceTokenProvider = new AzureServiceTokenProvider();
+//    var keyVaultClient = new KeyVaultClient(
+//        new KeyVaultClient.AuthenticationCallback(
+//            azureServiceTokenProvider.KeyVaultTokenCallback ) );
 
-    builder.AddAzureKeyVault(
-        $"https://{builtConfig[ "KeyVaultName" ]}.vault.azure.net/",
-        keyVaultClient,
-        new DefaultKeyVaultSecretManager() );
-}
+//    builder.AddAzureKeyVault(
+//        $"https://{builtConfig[ "KeyVaultName" ]}.vault.azure.net/",
+//        keyVaultClient,
+//        new DefaultKeyVaultSecretManager() );
+//}
 
+// Question 5 - Do I need the following two lines of code ?????????
 builder.Configuration.AddEnvironmentVariables();
 builder.Configuration.AddCommandLine(args);
 
