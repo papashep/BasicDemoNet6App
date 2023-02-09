@@ -12,7 +12,7 @@ var memCollection = new Dictionary<string, string>
 };
 
 
-// Question 1 - I cannot get the following line to work ?????????
+// Question 1 - I cannot get the following line to work also see Question 3 below ?????????
 // IHostEnvironment env = hostingContext.HostingEnvironment;
 
 // Question 2 - I cannot get the following line to work ?????????
@@ -27,7 +27,7 @@ builder.Services.Configure<EmailSettingsOptions>( builder.Configuration.GetSecti
 
 builder.Configuration.AddJsonFile( "appsettings.json", optional: false, reloadOnChange: true );
 
-// Question 3 - I cannot get the following to work, see related to Question 1 ?????????
+// Question 3 - I cannot get the following line to work, see Question 1 ?????????
 // builder.Configuration?.AddJsonFile( $"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true );
 
 
